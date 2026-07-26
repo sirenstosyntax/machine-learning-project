@@ -207,7 +207,7 @@ def p(text, style="BodySmall"):
 
 
 def bullet(text):
-    return Paragraph(f"â€¢ {text}", styles["BulletSmall"])
+    return Paragraph(f"&bull; {text}", styles["BulletSmall"])
 
 
 def section(title):
@@ -334,7 +334,7 @@ def build_story():
     )
     story += [
         p("<b>Prepared by Grant Collings</b>", "BodySmall"),
-        p("AI Mastery Capstone – Project 4", "BodySmall"),
+        p("AI Mastery Capstone - Project 4", "BodySmall"),
         Spacer(1, 0.18 * inch),
         metrics,
         Spacer(1, 0.26 * inch),
@@ -563,12 +563,39 @@ def build_story():
             "model added EMS system response time. Five-fold stratified cross-validation with a fixed "
             "random seed generated out-of-fold probabilities for every record."
         ),
-        subsection("Evaluation"),
+        subsection("Evaluation Metrics Justification"),
         p(
-            "ROC AUC and average precision were treated as primary threshold-independent metrics. "
-            "Average precision is especially informative when positive outcomes are less common, as "
-            "in the broad cohort (Saito &amp; Rehmsmeier, 2015). Balanced accuracy and F1 complemented "
-            "ordinary accuracy. A fixed probability threshold of 0.50 was used for threshold-dependent metrics."
+            "<b>Task and model fit:</b> This project is a supervised binary classification task that predicts "
+            "whether return of spontaneous circulation (ROSC) was documented for each NEMSIS cardiac-arrest "
+            "record. Logistic regression and random forest both produce class probabilities, so discrimination "
+            "and positive-case retrieval metrics are appropriate for comparing the two model types."
+        ),
+        p(
+            "<b>ROC AUC:</b> ROC AUC measures how well each model ranks ROSC-positive records above "
+            "ROSC-negative records across all possible thresholds instead of depending on one cutoff. This is "
+            "appropriate for comparing logistic regression and random forest even though the models can produce "
+            "differently distributed probabilities."
+        ),
+        p(
+            "<b>Average precision and class imbalance:</b> The broad cohort contains 5,097 ROSC-positive "
+            "records among 17,198 records, a positive rate of 29.64%. Because negative outcomes are the majority, "
+            "ordinary accuracy can appear acceptable even when a model performs poorly on the ROSC-positive "
+            "class. Average precision is therefore a primary metric because it summarizes precision-recall "
+            "performance for the less common positive outcome and can be interpreted relative to the 0.2964 "
+            "positive-class prevalence baseline (Saito &amp; Rehmsmeier, 2015)."
+        ),
+        p(
+            "<b>Balanced accuracy and F1:</b> Balanced accuracy gives equal importance to sensitivity for "
+            "ROSC-positive records and specificity for ROSC-negative records. F1 summarizes the balance between "
+            "precision and recall at the fixed 0.50 threshold. This matters because false positives overstate "
+            "ROSC likelihood while false negatives miss positive outcomes. These threshold-dependent metrics "
+            "complement, rather than replace, threshold-independent ROC AUC and average precision."
+        ),
+        p(
+            "<b>Validation design:</b> Five-fold stratified cross-validation preserves the ROSC class proportion "
+            "within every fold and generates an out-of-fold prediction for every record. This provides a more "
+            "stable comparison than one train-test split and reduces the risk that a favorable or unfavorable "
+            "single split determines the reported performance."
         ),
         Spacer(1, 6),
         report_image("model_metric_comparison.png", 6.35 * inch, 3.6 * inch),
@@ -645,6 +672,30 @@ def build_story():
             "Report response time as one factor among rhythm, witness status, AED use, etiology, age, and geography."
         ),
         bullet("Do not use this model for individual patient treatment, dispatch prioritization, or causal performance claims."),
+        subsection("Bias and Responsible Use"),
+        p(
+            "<b>Potential sources of bias:</b> NEMSIS is a de-identified convenience sample rather than a "
+            "nationally representative patient sample. Participation, case mix, response systems, and documentation "
+            "practices can differ across states, agencies, Census regions, and urbanicity categories. Missing and "
+            "not-recorded values may reflect agency workflow rather than the patient condition. These differences "
+            "can introduce representation bias and measurement bias into both training and evaluation."
+        ),
+        p(
+            "<b>Possible real-world impact:</b> The model may perform better for well-represented agencies or "
+            "urban systems and may understate or overstate ROSC probability for rural, frontier, regional, or age "
+            "subgroups. If such predictions were used for treatment or dispatch decisions, unequal error rates "
+            "could reinforce existing disparities. ROSC is also only an intermediate outcome, so it must not be "
+            "treated as a substitute for survival to discharge or favorable neurological outcome."
+        ),
+        p(
+            "<b>Proposed mitigation step:</b> Before any operational use, the model should be externally validated "
+            "with data from separate agencies and audited by urbanicity, Census region, and age band using ROC AUC, "
+            "average precision, balanced accuracy, recall, and calibration. Material subgroup gaps should trigger "
+            "investigation, collection of more representative data, and reweighting or retraining; use should be "
+            "withheld for groups that do not demonstrate acceptable performance. Until those checks are completed, "
+            "this model remains an educational quality-improvement prototype and must not be used for individual "
+            "patient treatment or dispatch prioritization."
+        ),
         subsection("Limitations"),
         bullet("NEMSIS is a convenience sample and is not nationally population-based (NEMSIS, 2026)."),
         bullet("Records are EMS activations, not unique patients or incidents; multiple agencies may submit records for one event."),
@@ -690,7 +741,7 @@ def build_story():
         ),
         subsection("References"),
         p(
-            "Bray, J. E., GrÃ¤sner, J.-T., Nolan, J. P., Iwami, T., Ong, M. E. H., Finn, J., "
+            "Bray, J. E., Gr&#228;sner, J.-T., Nolan, J. P., Iwami, T., Ong, M. E. H., Finn, J., "
             "McNally, B., Nehme, Z., Sasson, C., Tijssen, J., Lim, S. L., Tjelmeland, I., "
             "Wnent, J., Dicker, B., Nishiyama, C., Doherty, Z., Welsford, M., Perkins, G. D., "
             "&amp; International Liaison Committee on Resuscitation. "
